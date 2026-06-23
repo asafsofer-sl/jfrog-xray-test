@@ -1,4 +1,4 @@
-yamlname: Test Build and Report to JFrog
+name: Test Build and Report to JFrog
 
 on:
   push:
