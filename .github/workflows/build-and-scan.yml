@@ -1,0 +1,55 @@
+
+yamlname: Test Build and Report to JFrog
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-scan-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # needed if you use OIDC instead of static token
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Sets up JFrog CLI and configures it with your platform
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ secrets.JF_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+
+      - name: Configure npm repo for JFrog
+        run: |
+          jf npmc --repo-resolve=npm-remote --repo-deploy=npm-local
+
+      - name: Install dependencies (resolved through JFrog, build-info collected)
+        run: |
+          jf npm install --build-name=vuln-demo-app --build-number=${{ github.run_number }}
+
+      - name: Build the project (if you have a build step)
+        run: |
+          jf npm run build --build-name=vuln-demo-app --build-number=${{ github.run_number }} || echo "No build script, skipping"
+
+      - name: Publish build-info to JFrog
+        run: |
+          jf rt build-collect-env vuln-demo-app ${{ github.run_number }}
+          jf rt build-add-git vuln-demo-app ${{ github.run_number }}
+          jf rt build-publish vuln-demo-app ${{ github.run_number }}
+
+      - name: Scan build with JFrog Xray
+        run: |
+          jf build-scan vuln-demo-app ${{ github.run_number }}
+testJF.txt
+Displaying testJF.txt.
