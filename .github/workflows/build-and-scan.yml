@@ -24,7 +24,7 @@ jobs:
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
       - name: Configure npm repo for JFrog
         run: |
-          jf npmc --repo-resolve=npm-remote --repo-deploy=npm-local
+          jf npmc --repo-resolve=test-npm-remote --repo-deploy=npm-local
       - name: Install dependencies (resolved through JFrog, build-info collected)
         run: |
           jf npm install --build-name=vuln-demo-app --build-number=${{ github.run_number }}
