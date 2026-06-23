@@ -50,5 +50,5 @@ jobs:
       - name: Scan build with JFrog Xray
         run: |
           jf build-scan vuln-demo-app ${{ github.run_number }}
-testJF.txt
-Displaying testJF.txt.
+build-and-scan.yml
+Displaying build-and-scan.yml
