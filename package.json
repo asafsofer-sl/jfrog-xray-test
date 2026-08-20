@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "lodash": "4.17.12",
+    "lodash": "4.17.11",
     "express": "4.16.0",
     "minimist": "1.2.0",
     "axios": "0.18.0",
